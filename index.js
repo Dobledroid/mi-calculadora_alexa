@@ -48,64 +48,74 @@ const calcularManejador = {
     let resultado = 0;
     let tipo_operacion = '';
 
-    console.log(`Operación: ${operacion}`);
-    console.log(`Primer número: ${primer_numero}`);
-    console.log(`Segundo número: ${segundo_numero}`);
-
-    if (operacion && primer_numero !== null) {
-      switch (operacion) {
-        case 'multiplicar':
-          tipo_operacion = 'multiplicación';
-          resultado = primer_numero * segundo_numero;
-          break;
-        case 'dividir':
-          tipo_operacion = 'división';
-          resultado = primer_numero / segundo_numero;
-          break;
-        case 'restar':
-          tipo_operacion = 'resta';
-          resultado = primer_numero - segundo_numero;
-          break;
-        case 'sumar':
-          tipo_operacion = 'suma';
-          resultado = primer_numero + segundo_numero;
-          break;
-        case 'potencia':
-          tipo_operacion = 'potenciación';
-          resultado = Math.pow(primer_numero, segundo_numero);
-          break;
-        case 'seno':
-          tipo_operacion = 'seno';
-          resultado = Math.sin(primer_numero * (Math.PI / 180));  // Conversión de grados a radianes
-          break;
-        case 'coseno':
-          tipo_operacion = 'coseno';
-          resultado = Math.cos(primer_numero * (Math.PI / 180));  // Conversión de grados a radianes
-          break;
-        case 'tangente':
-          tipo_operacion = 'tangente';
-          resultado = Math.tan(primer_numero * (Math.PI / 180));  // Conversión de grados a radianes
-          break;
-        default:
-          const speakOutput = `Lo siento, no reconozco la operación ${operacion}.`;
-          return handlerInput.responseBuilder
-            .speak(speakOutput)
-            .reprompt(speakOutput)
-            .getResponse();
-      }
-
-      const speakOutput = `El resultado de la ${tipo_operacion} es ${resultado}`;
-      return handlerInput.responseBuilder
-        .speak(speakOutput)
-        .reprompt(speakOutput)
-        .getResponse();
-    } else {
+    if (!operacion || primer_numero === null) {
       const speakOutput = `No se pudo realizar la operación. Asegúrate de proporcionar una operación y números válidos.`;
       return handlerInput.responseBuilder
         .speak(speakOutput)
         .reprompt(speakOutput)
         .getResponse();
     }
+
+    switch (operacion) {
+      case 'multiplicar':
+        tipo_operacion = 'multiplicación';
+        resultado = primer_numero * segundo_numero;
+        break;
+      case 'dividir':
+        tipo_operacion = 'división';
+        if (segundo_numero === null || segundo_numero === 0) {
+          const speakOutput = `No se puede dividir entre cero. Por favor proporciona un segundo número válido.`;
+          return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(speakOutput)
+            .getResponse();
+        }
+        resultado = primer_numero / segundo_numero;
+        break;
+      case 'restar':
+        tipo_operacion = 'resta';
+        resultado = primer_numero - segundo_numero;
+        break;
+      case 'sumar':
+        tipo_operacion = 'suma';
+        resultado = primer_numero + segundo_numero;
+        break;
+      case 'potencia':
+        tipo_operacion = 'potenciación';
+        if (segundo_numero === null) {
+          const speakOutput = `Por favor proporciona un segundo número para la operación de potencia.`;
+          return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(speakOutput)
+            .getResponse();
+        }
+        resultado = Math.pow(primer_numero, segundo_numero);
+        break;
+      case 'seno':
+        tipo_operacion = 'seno';
+        resultado = Math.sin(primer_numero * (Math.PI / 180));  // Conversión de grados a radianes
+        break;
+      case 'coseno':
+        tipo_operacion = 'coseno';
+        resultado = Math.cos(primer_numero * (Math.PI / 180));  // Conversión de grados a radianes
+        break;
+      case 'tangente':
+        tipo_operacion = 'tangente';
+        resultado = Math.tan(primer_numero * (Math.PI / 180));  // Conversión de grados a radianes
+        break;
+      default:
+        const speakOutput = `Lo siento, no reconozco la operación ${operacion}.`;
+        return handlerInput.responseBuilder
+          .speak(speakOutput)
+          .reprompt(speakOutput)
+          .getResponse();
+    }
+
+    const speakOutput = `El resultado de la ${tipo_operacion} es ${resultado}`;
+    return handlerInput.responseBuilder
+      .speak(speakOutput)
+      .reprompt(speakOutput)
+      .getResponse();
   }
 };
 
